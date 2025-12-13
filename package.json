@@ -1,0 +1,15 @@
+{
+  "name": "faceplate",
+  "version": "1.0.0",
+  "description": "Lightweight agentic chat interface for Shifter cyber range.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
