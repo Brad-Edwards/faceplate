@@ -8,6 +8,14 @@ FastAPI application handling agent orchestration, MCP tool calling, and WebSocke
 backend/
 ├── app/
 │   ├── __init__.py
+│   ├── auth/                # Authentication module
+│   │   ├── __init__.py      # Public exports
+│   │   ├── exceptions.py    # Auth-specific exceptions
+│   │   ├── jwt.py           # JWTValidator, TokenClaims
+│   │   └── jwks.py          # JWKSCache for key management
+│   ├── core/                # Configuration
+│   │   ├── __init__.py
+│   │   └── config.py        # CognitoSettings, Settings
 │   ├── models/              # SQLAlchemy models
 │   │   ├── __init__.py
 │   │   ├── base.py          # Declarative base, mixins
@@ -23,6 +31,10 @@ backend/
 │           └── versions/
 ├── tests/
 │   ├── conftest.py          # Pytest fixtures
+│   ├── auth/                # Auth module tests
+│   │   ├── conftest.py      # Mock JWT/JWKS fixtures
+│   │   ├── test_jwt.py      # JWT validation tests
+│   │   └── test_jwks.py     # JWKS cache tests
 │   ├── models/              # Model tests
 │   └── db/                  # Database tests
 ├── alembic.ini
@@ -136,6 +148,57 @@ uv run ruff check --fix .
 uv run ruff format .
 ```
 
+## Authentication Module
+
+The `app/auth/` module handles JWT validation for Cognito tokens.
+
+### Usage
+
+```python
+from app.auth import JWTValidator, JWKSCache, TokenClaims
+from app.core.config import get_settings
+
+settings = get_settings()
+
+# Create JWKS cache (shared across requests)
+jwks_cache = JWKSCache(settings.cognito, ttl=3600)
+
+# Create validator with cache
+validator = JWTValidator(settings.cognito, jwks_cache)
+
+# Validate token
+claims: TokenClaims = await validator.validate_token(token)
+print(f"User: {claims.email}, ID: {claims.sub}")
+```
+
+### Components
+
+| Component | Purpose |
+|-----------|---------|
+| `JWTValidator` | Validates tokens, extracts claims |
+| `JWKSCache` | Caches Cognito public keys (1 hour TTL) |
+| `TokenClaims` | Dataclass with sub, email, exp, iat, iss |
+
+### Exceptions
+
+| Exception | When Raised |
+|-----------|-------------|
+| `TokenExpiredError` | Token exp claim in the past |
+| `TokenInvalidError` | Malformed or missing claims |
+| `TokenSignatureError` | Signature verification failed |
+| `KeyNotFoundError` | Key ID not in JWKS |
+| `JWKSFetchError` | Cannot reach Cognito JWKS endpoint |
+
+### Configuration
+
+Environment variables for Cognito:
+
+```bash
+COGNITO_REGION=us-east-1
+COGNITO_USER_POOL_ID=us-east-1_XXXXXXXXX
+COGNITO_APP_CLIENT_ID=xxxxxxxxxxxxxxxxxxxxxxxxxx
+```
+
 ## Dependencies
 
 Key production dependencies:
@@ -144,5 +207,7 @@ Key production dependencies:
 - asyncpg - PostgreSQL async driver
 - Alembic - Migrations
 - uuid6 - UUID7 generation
+- python-jose[cryptography] - JWT validation
+- httpx - Async HTTP client for JWKS fetch
 
 See `pyproject.toml` for full list.

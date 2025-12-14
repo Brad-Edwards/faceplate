@@ -30,45 +30,44 @@ Security controls and threat model for Faceplate.
 **Flow:**
 1. Frontend receives JWT from Portal (Cognito OIDC)
 2. JWT stored in httpOnly cookie
-3. WebSocket connection includes JWT in Authorization header
+3. WebSocket connection includes JWT in query parameter
 4. Backend validates JWT signature against Cognito public keys
-5. User email extracted from claims for authorization
+5. User email and sub extracted from claims for authorization
 
 **Implementation:**
 ```python
-# app/auth.py
+# app/auth/jwt.py
 
-async def validate_token(token: str) -> Dict:
-    # Fetch Cognito public keys (cached)
-    public_keys = await get_cognito_public_keys()
-    
-    # Decode header to get kid
-    header = jwt.get_unverified_header(token)
-    
-    # Find matching key
-    key = next(k for k in public_keys["keys"] if k["kid"] == header["kid"])
-    
-    # Verify signature and claims
-    claims = jwt.decode(
-        token,
-        key,
-        algorithms=["RS256"],
-        audience=settings.cognito_client_id,
-        issuer=f"https://cognito-idp.{settings.cognito_region}.amazonaws.com/{settings.cognito_user_pool_id}"
-    )
-    
-    # Verify token not expired
-    if claims["exp"] < time.time():
-        raise HTTPException(401, "Token expired")
-    
-    return claims
+from app.auth import JWTValidator, JWKSCache, TokenClaims
+from app.core.config import get_settings
+
+settings = get_settings()
+
+# JWKS cache with 1-hour TTL (shared singleton)
+jwks_cache = JWKSCache(settings.cognito, ttl=3600)
+
+# Validator instance
+validator = JWTValidator(settings.cognito, jwks_cache)
+
+async def validate_token(token: str) -> TokenClaims:
+    """Validate JWT and return claims."""
+    return await validator.validate_token(token)
 ```
+
+**Token Claims Extracted:**
+- `sub`: Cognito user ID (stable, used as FK)
+- `email`: User email address
+- `exp`: Expiration timestamp
+- `iat`: Issued-at timestamp
+- `iss`: Issuer URL (verified against Cognito)
 
 **Security Controls:**
 - RS256 asymmetric signature validation
-- Audience and issuer claim verification
-- Expiration time check
-- Public keys cached with 1-hour refresh
+- Audience (aud) and issuer (iss) claim verification
+- Expiration time check (built into python-jose)
+- Required claims validation (sub, email)
+- Public keys cached with 1-hour TTL
+- Graceful degradation if JWKS fetch fails (uses cached keys)
 - WebSocket closed immediately on auth failure
 
 ### Authorization

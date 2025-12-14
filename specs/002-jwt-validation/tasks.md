@@ -23,9 +23,9 @@
 
 **Purpose**: Project structure and configuration for auth module
 
-- [ ] T001 Create auth module directory structure: `backend/app/auth/__init__.py`
-- [ ] T002 [P] Create auth exceptions module in `backend/app/auth/exceptions.py`
-- [ ] T003 [P] Add Cognito settings to `backend/app/core/config.py`
+- [x] T001 Create auth module directory structure: `backend/app/auth/__init__.py`
+- [x] T002 [P] Create auth exceptions module in `backend/app/auth/exceptions.py`
+- [x] T003 [P] Add Cognito settings to `backend/app/core/config.py`
 
 ---
 
@@ -33,9 +33,9 @@
 
 **Purpose**: Core infrastructure that MUST be complete before user stories
 
-- [ ] T004 Create test fixtures for JWT testing in `backend/tests/auth/conftest.py`
-- [ ] T005 [P] Create mock JWKS generator for tests in `backend/tests/auth/conftest.py`
-- [ ] T006 [P] Create mock JWT generator for tests in `backend/tests/auth/conftest.py`
+- [x] T004 Create test fixtures for JWT testing in `backend/tests/auth/conftest.py`
+- [x] T005 [P] Create mock JWKS generator for tests in `backend/tests/auth/conftest.py`
+- [x] T006 [P] Create mock JWT generator for tests in `backend/tests/auth/conftest.py`
 
 **Checkpoint**: Test infrastructure ready - user story implementation can begin
 
@@ -51,16 +51,16 @@
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T007 [P] [US1] Test valid signature passes in `backend/tests/auth/test_jwt.py::test_valid_signature_passes`
-- [ ] T008 [P] [US1] Test tampered signature fails in `backend/tests/auth/test_jwt.py::test_tampered_signature_fails`
-- [ ] T009 [P] [US1] Test unknown key fails in `backend/tests/auth/test_jwt.py::test_unknown_key_fails`
+- [x] T007 [P] [US1] Test valid signature passes in `backend/tests/auth/test_jwt.py::test_valid_signature_passes`
+- [x] T008 [P] [US1] Test tampered signature fails in `backend/tests/auth/test_jwt.py::test_tampered_signature_fails`
+- [x] T009 [P] [US1] Test unknown key fails in `backend/tests/auth/test_jwt.py::test_unknown_key_fails`
 
 ### Implementation for User Story 1
 
-- [ ] T010 [US1] Create JWTValidator class in `backend/app/auth/jwt.py`
-- [ ] T011 [US1] Implement `validate_token()` method with RS256 verification in `backend/app/auth/jwt.py`
-- [ ] T012 [US1] Add issuer (iss) claim validation in `backend/app/auth/jwt.py`
-- [ ] T013 [US1] Add audience (aud) claim validation in `backend/app/auth/jwt.py`
+- [x] T010 [US1] Create JWTValidator class in `backend/app/auth/jwt.py`
+- [x] T011 [US1] Implement `validate_token()` method with RS256 verification in `backend/app/auth/jwt.py`
+- [x] T012 [US1] Add issuer (iss) claim validation in `backend/app/auth/jwt.py`
+- [x] T013 [US1] Add audience (aud) claim validation in `backend/app/auth/jwt.py`
 
 **Checkpoint**: Signature validation works - tokens with valid signatures pass, invalid fail
 
@@ -74,16 +74,16 @@
 
 ### Tests for User Story 2
 
-- [ ] T014 [P] [US2] Test email and sub extraction in `backend/tests/auth/test_jwt.py::test_claims_extraction`
-- [ ] T015 [P] [US2] Test missing required claims fails in `backend/tests/auth/test_jwt.py::test_missing_claims_fails`
-- [ ] T016 [P] [US2] Test expired token fails in `backend/tests/auth/test_jwt.py::test_expired_token_fails`
+- [x] T014 [P] [US2] Test email and sub extraction in `backend/tests/auth/test_jwt.py::test_claims_extraction`
+- [x] T015 [P] [US2] Test missing required claims fails in `backend/tests/auth/test_jwt.py::test_missing_claims_fails`
+- [x] T016 [P] [US2] Test expired token fails in `backend/tests/auth/test_jwt.py::test_expired_token_fails`
 
 ### Implementation for User Story 2
 
-- [ ] T017 [US2] Create TokenClaims dataclass in `backend/app/auth/jwt.py`
-- [ ] T018 [US2] Implement claims extraction in `validate_token()` in `backend/app/auth/jwt.py`
-- [ ] T019 [US2] Add expiration (exp) claim validation in `backend/app/auth/jwt.py`
-- [ ] T020 [US2] Add `get_user_id()` convenience method in `backend/app/auth/jwt.py`
+- [x] T017 [US2] Create TokenClaims dataclass in `backend/app/auth/jwt.py`
+- [x] T018 [US2] Implement claims extraction in `validate_token()` in `backend/app/auth/jwt.py`
+- [x] T019 [US2] Add expiration (exp) claim validation in `backend/app/auth/jwt.py`
+- [x] T020 [US2] Add `get_user_id()` convenience method in `backend/app/auth/jwt.py`
 
 **Checkpoint**: Claims extraction works - can get email and sub from valid tokens
 
@@ -97,19 +97,19 @@
 
 ### Tests for User Story 3
 
-- [ ] T021 [P] [US3] Test keys are fetched on first call in `backend/tests/auth/test_jwks.py::test_keys_fetched_on_first_call`
-- [ ] T022 [P] [US3] Test cached keys used within TTL in `backend/tests/auth/test_jwks.py::test_cached_keys_used`
-- [ ] T023 [P] [US3] Test keys refresh after TTL expires in `backend/tests/auth/test_jwks.py::test_keys_refresh_after_ttl`
-- [ ] T024 [P] [US3] Test graceful degradation when IdP down in `backend/tests/auth/test_jwks.py::test_idp_down_uses_cache`
+- [x] T021 [P] [US3] Test keys are fetched on first call in `backend/tests/auth/test_jwks.py::test_keys_fetched_on_first_call`
+- [x] T022 [P] [US3] Test cached keys used within TTL in `backend/tests/auth/test_jwks.py::test_cached_keys_used`
+- [x] T023 [P] [US3] Test keys refresh after TTL expires in `backend/tests/auth/test_jwks.py::test_keys_refresh_after_ttl`
+- [x] T024 [P] [US3] Test graceful degradation when IdP down in `backend/tests/auth/test_jwks.py::test_idp_down_uses_cache`
 
 ### Implementation for User Story 3
 
-- [ ] T025 [US3] Create JWKSCache class in `backend/app/auth/jwks.py`
-- [ ] T026 [US3] Implement async JWKS fetch with httpx in `backend/app/auth/jwks.py`
-- [ ] T027 [US3] Add TTL-based cache expiration (1 hour) in `backend/app/auth/jwks.py`
-- [ ] T028 [US3] Implement `get_key(kid)` method in `backend/app/auth/jwks.py`
-- [ ] T029 [US3] Integrate JWKSCache with JWTValidator in `backend/app/auth/jwt.py`
-- [ ] T030 [US3] Handle JWKS fetch errors gracefully in `backend/app/auth/jwks.py`
+- [x] T025 [US3] Create JWKSCache class in `backend/app/auth/jwks.py`
+- [x] T026 [US3] Implement async JWKS fetch with httpx in `backend/app/auth/jwks.py`
+- [x] T027 [US3] Add TTL-based cache expiration (1 hour) in `backend/app/auth/jwks.py`
+- [x] T028 [US3] Implement `get_key(kid)` method in `backend/app/auth/jwks.py`
+- [x] T029 [US3] Integrate JWKSCache with JWTValidator in `backend/app/auth/jwt.py`
+- [x] T030 [US3] Handle JWKS fetch errors gracefully in `backend/app/auth/jwks.py`
 
 **Checkpoint**: Key caching works - network calls minimized, graceful degradation
 
@@ -119,9 +119,9 @@
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T031 [P] Add structured logging for auth events in `backend/app/auth/jwt.py`
-- [ ] T032 [P] Export public API in `backend/app/auth/__init__.py`
-- [ ] T033 Run quickstart.md validation scenarios
+- [x] T031 [P] Add structured logging for auth events in `backend/app/auth/jwt.py`
+- [x] T032 [P] Export public API in `backend/app/auth/__init__.py`
+- [x] T033 Run quickstart.md validation scenarios
 
 ---
 
@@ -129,13 +129,13 @@
 
 **Purpose**: Validate quality before spec is complete
 
-- [ ] T034 Run linting: `cd backend && uv run ruff check .`
-- [ ] T035 Run format check: `cd backend && uv run ruff format --check .`
-- [ ] T036 Run security check: `cd backend && uv run ruff check . --select=S`
-- [ ] T037 Run tests with coverage: `cd backend && uv run pytest tests/auth/ --cov=app/auth --cov-fail-under=80`
-- [ ] T038 Verify all tests pass (no failures)
-- [ ] T039 Verify coverage >= 80%
-- [ ] T040 Fix any issues found above before proceeding
+- [x] T034 Run linting: `cd backend && uv run ruff check .`
+- [x] T035 Run format check: `cd backend && uv run ruff format --check .`
+- [x] T036 Run security check: `cd backend && uv run ruff check . --select=S`
+- [x] T037 Run tests with coverage: `cd backend && uv run pytest tests/auth/ --cov=app/auth --cov-fail-under=80`
+- [x] T038 Verify all tests pass (no failures)
+- [x] T039 Verify coverage >= 80%
+- [x] T040 Fix any issues found above before proceeding
 
 ---
 
@@ -143,9 +143,9 @@
 
 **Purpose**: Update docs to reflect implementation
 
-- [ ] T041 Update `docs/backend.md` with auth module documentation
-- [ ] T042 Add JWT validation section to `docs/security.md`
-- [ ] T043 Verify docs are consistent with implementation
+- [x] T041 Update `docs/backend.md` with auth module documentation
+- [x] T042 Add JWT validation section to `docs/security.md`
+- [x] T043 Verify docs are consistent with implementation
 
 **Quality Gate Criteria**:
 
