@@ -1,0 +1,23 @@
+name: Quality
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  check:
+    name: Build and Analyze
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Placeholder check
+        run: |
+          echo "Quality checks will be implemented with specs"
+          echo "- Python: Ruff linting"
+          echo "- TypeScript: ESLint + Prettier"
+          echo "- Tests: pytest + Vitest"
+          echo "Passing for now..."
+
