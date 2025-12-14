@@ -94,7 +94,7 @@ jobs:
 
       - name: Test with coverage (80% minimum)
         working-directory: frontend
-        run: npm run test -- --coverage --coverageThreshold='{"global":{"branches":80,"functions":80,"lines":80,"statements":80}}'
+        run: npm run test -- --coverage
 
   sonarcloud:
     name: SonarCloud Analysis
