@@ -382,6 +382,25 @@ resource "aws_ecr_repository" "faceplate" {
 }
 ```
 
+## Environment Variables Reference
+
+All environment variables read by Faceplate:
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| DATABASE_URL | Yes | - | PostgreSQL connection string (SecretStr) |
+| COGNITO_USER_POOL_ID | Yes | - | AWS Cognito user pool ID |
+| COGNITO_APP_CLIENT_ID | Yes | - | AWS Cognito app client ID |
+| COGNITO_REGION | No | us-east-1 | AWS region for Cognito |
+| BEDROCK_ENDPOINT | No | - | Bedrock Access Gateway URL |
+| BEDROCK_MODEL | No | anthropic.claude-3-5-sonnet-20241022-v2:0 | Default LLM model ID |
+| BEDROCK_MAX_TOKENS | No | 4096 | Max tokens per response |
+| LOG_LEVEL | No | INFO | Logging level (DEBUG, INFO, WARNING, ERROR) |
+| MAX_TOOL_CALLS | No | 20 | Max MCP tool calls per agent turn |
+| JWKS_CACHE_TTL | No | 3600 | JWKS public key cache TTL (seconds) |
+
+**Sensitive Values**: DATABASE_URL uses SecretStr and is never logged.
+
 ## User Data Script
 
 ```bash
