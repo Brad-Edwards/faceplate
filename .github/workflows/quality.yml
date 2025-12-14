@@ -62,7 +62,7 @@ jobs:
         working-directory: backend
         env:
           TEST_DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/faceplate_test
-        run: uv run pytest --cov=app --cov-report=xml --cov-fail-under=80
+        run: uv run pytest --cov=app --cov-report=xml --cov-fail-under=80 --cov-config=pyproject.toml
 
   frontend:
     name: Frontend Quality

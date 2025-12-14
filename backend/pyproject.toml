@@ -49,3 +49,17 @@ ignore = ["S101"]
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"
+
+[tool.coverage.run]
+source = ["app"]
+omit = [
+    "app/db/*",               # DB infrastructure - tested via integration
+    "app/db/migrations/*",    # Generated migration files
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "if __name__ == .__main__.:",
+]
