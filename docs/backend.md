@@ -148,6 +148,50 @@ uv run ruff check --fix .
 uv run ruff format .
 ```
 
+## Configuration Module
+
+The `app/core/` module provides centralized configuration management.
+
+### Usage
+
+```python
+from app.core.config import get_settings
+
+settings = get_settings()
+
+# Access configuration
+print(settings.database_url.get_secret_value())  # SecretStr
+print(settings.cognito.cognito_user_pool_id)
+print(settings.bedrock.bedrock_model)
+print(settings.log_level)
+```
+
+### Environment Variables
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| DATABASE_URL | Yes | - | PostgreSQL connection string |
+| COGNITO_USER_POOL_ID | Yes | - | Cognito user pool ID |
+| COGNITO_APP_CLIENT_ID | Yes | - | Cognito app client ID |
+| COGNITO_REGION | No | us-east-1 | AWS region |
+| BEDROCK_ENDPOINT | No | - | Bedrock Access Gateway URL |
+| BEDROCK_MODEL | No | anthropic.claude-3-5-sonnet-20241022-v2:0 | Default model |
+| BEDROCK_MAX_TOKENS | No | 4096 | Max tokens per response |
+| LOG_LEVEL | No | INFO | Logging level |
+| MAX_TOOL_CALLS | No | 20 | Max tool calls per turn |
+| JWKS_CACHE_TTL | No | 3600 | JWKS cache TTL (seconds) |
+
+### Secrets Manager Integration
+
+For production, sensitive values can be fetched from AWS Secrets Manager:
+
+```python
+from app.core.secrets import SecretsManager
+
+manager = SecretsManager()
+secret = manager.get_secret_or_env("arn:aws:secretsmanager:...", "DATABASE_URL")
+```
+
 ## Authentication Module
 
 The `app/auth/` module handles JWT validation for Cognito tokens.
