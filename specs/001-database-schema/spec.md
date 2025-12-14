@@ -41,9 +41,9 @@ Application maintains efficient database connections.
 
 ### Edge Cases
 
-- What happens when database is unreachable at startup? → Fail fast with clear error
-- What happens when connection drops mid-query? → Retry once, then propagate error
-- What happens when pool is exhausted for >30s? → Timeout with error
+- What happens when database is unreachable at startup? → Fail fast with clear error within 5 seconds
+- What happens when connection drops mid-query? → Retry once with 1 second delay, then propagate error
+- What happens when pool is exhausted for >30s? → Timeout with error (pool_timeout=30)
 
 ## Requirements
 
@@ -52,7 +52,7 @@ Application maintains efficient database connections.
 - **FR-001**: System MUST create users table (id, email, subject_id, created_at)
 - **FR-002**: System MUST create conversations table (id, user_id, title, created_at, updated_at)
 - **FR-003**: System MUST create messages table (id, conversation_id, role, content, tool_calls, tool_results, created_at)
-- **FR-004**: System MUST create mcp_configs table (id, user_id, config, created_at, updated_at)
+- **FR-004**: System MUST create mcp_configs table (id, user_id, name, config, enabled, created_at, updated_at)
 - **FR-005**: System MUST use connection pooling (min 5, max 20 connections)
 - **FR-006**: System MUST use UUID primary keys
 - **FR-007**: System MUST enforce foreign key constraints with cascade delete

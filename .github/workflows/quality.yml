@@ -12,32 +12,67 @@ permissions:
   contents: read
 
 jobs:
-  build:
-    name: Build and Analyze
+  backend:
+    name: Backend Quality
     runs-on: ubuntu-latest
     
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: faceplate_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      # Python setup and linting
       - name: Setup uv
         uses: astral-sh/setup-uv@v4
 
-      - name: Lint Python
+      - name: Install dependencies
         working-directory: backend
-        run: |
-          uv sync --group dev
-          uv run ruff check .
-          uv run ruff format --check .
+        run: uv sync --group dev
 
-      - name: Test Python
+      - name: Lint (ruff check)
         working-directory: backend
-        run: |
-          uv run pytest || echo "No tests yet - will be added with specs"
+        run: uv run ruff check .
 
-      # Node setup and linting
+      - name: Format check (ruff format)
+        working-directory: backend
+        run: uv run ruff format --check .
+
+      - name: Security check (ruff S rules)
+        working-directory: backend
+        run: uv run ruff check . --select=S
+
+      - name: Create test schema
+        run: |
+          PGPASSWORD=postgres psql -h localhost -U postgres -d faceplate_test -c "CREATE SCHEMA IF NOT EXISTS faceplate;"
+
+      - name: Test with coverage (80% minimum)
+        working-directory: backend
+        env:
+          TEST_DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/faceplate_test
+        run: uv run pytest --cov=app --cov-report=xml --cov-fail-under=80
+
+  frontend:
+    name: Frontend Quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -45,23 +80,32 @@ jobs:
           cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
 
-      - name: Install frontend dependencies
+      - name: Install dependencies
         working-directory: frontend
-        run: npm ci || echo "No package-lock.json yet - will be added with specs"
+        run: npm ci
 
-      - name: Lint TypeScript
+      - name: Lint (ESLint)
         working-directory: frontend
-        run: npm run lint || echo "No src yet - will be added with specs"
+        run: npm run lint
 
-      - name: Check formatting
+      - name: Format check (Prettier)
         working-directory: frontend
-        run: npm run format:check || echo "No src yet - will be added with specs"
+        run: npm run format:check
 
-      - name: Test frontend
+      - name: Test with coverage (80% minimum)
         working-directory: frontend
-        run: npm run test || echo "No tests yet - will be added with specs"
+        run: npm run test -- --coverage --coverageThreshold='{"global":{"branches":80,"functions":80,"lines":80,"statements":80}}'
 
-      # SonarCloud (soft gate - informational only for now)
+  sonarcloud:
+    name: SonarCloud Analysis
+    runs-on: ubuntu-latest
+    needs: [backend, frontend]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         continue-on-error: true

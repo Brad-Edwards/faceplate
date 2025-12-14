@@ -1,2 +1,1 @@
-# Tests
-
+"""Faceplate test suite."""

@@ -146,7 +146,7 @@ Examples of foundational tasks (adjust based on your project):
 
 ---
 
-## Phase N: Polish & Cross-Cutting Concerns
+## Phase N-1: Polish & Cross-Cutting Concerns
 
 **Purpose**: Improvements that affect multiple user stories
 
@@ -156,6 +156,43 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] TXXX [P] Additional unit tests (if requested) in tests/unit/
 - [ ] TXXX Security hardening
 - [ ] TXXX Run quickstart.md validation
+
+---
+
+## Phase N: Quality Gate (REQUIRED)
+
+**Purpose**: Validate quality before spec is complete.
+
+- [ ] TXXX Run linting: `uv run ruff check .` (backend) or `npm run lint` (frontend)
+- [ ] TXXX Run format check: `uv run ruff format --check .` (backend) or `npm run format:check` (frontend)
+- [ ] TXXX Run security check: `uv run ruff check . --select=S` (backend)
+- [ ] TXXX Run tests with coverage: `uv run pytest --cov=app --cov-fail-under=80` (backend) or `npm run test -- --coverage` (frontend)
+- [ ] TXXX Verify all tests pass (no failures)
+- [ ] TXXX Verify coverage >= 80%
+- [ ] TXXX Fix any issues found above before proceeding
+
+---
+
+## Phase N+1: Documentation (REQUIRED)
+
+**Purpose**: Update docs to reflect implementation. Done after testing in case issues arise.
+
+- [ ] TXXX Update relevant docs/ files to reflect new functionality
+- [ ] TXXX Add/update API documentation if endpoints added
+- [ ] TXXX Add/update data model documentation if schema changed
+- [ ] TXXX Verify docs are consistent with implementation
+
+**Quality Gate Criteria**:
+
+| Check | Command | Required |
+|-------|---------|----------|
+| Lint | `ruff check .` / `npm run lint` | 0 errors |
+| Format | `ruff format --check .` / `npm run format:check` | 0 errors |
+| Security | `ruff check . --select=S` | 0 errors |
+| Tests | `pytest` / `npm run test` | All pass |
+| Coverage | `--cov-fail-under=80` | >= 80% |
+
+**Checkpoint**: Quality gate passed - spec implementation complete
 
 ---
 
