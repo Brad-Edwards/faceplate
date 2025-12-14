@@ -1,50 +1,58 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+# Faceplate Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Minimalism (NON-NEGOTIABLE)
+- Faceplate replaces OpenWebUI because OWUI is bloated
+- No features unless explicitly required for cyber range chat
+- No document upload, RAG, image gen, or plugins
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### II. Multi-Chat with Context Isolation
+- Users can have multiple conversations
+- Each conversation has isolated context
+- Agent in one conversation cannot see other conversation histories
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### III. MCP-First Design
+- Tool calling via MCP is the core value proposition
+- All tools routed through MCP manager
+- Support MCP per-user authentication
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### IV. Test-First (NON-NEGOTIABLE)
+- TDD mandatory: Tests written → Fail → Implement → Pass
+- Backend coverage ≥80% (pytest)
+- All API endpoints have Pydantic schema validation
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### V. Shared Infrastructure
+- Same VPC, RDS, Cognito as Shifter Portal
+- PostgreSQL (schema: `faceplate`)
+- No Redis, no new databases
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+### VI. Security by Default
+- JWT validation on every WebSocket connect
+- Users only access their own conversations
+- MCP config determines available tools (Faceplate trusts the config it receives)
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+## Technology Stack
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+| Layer | Technology |
+|-------|------------|
+| Backend | FastAPI, SQLAlchemy, Python 3.12 |
+| Frontend | React 18, TypeScript, Vite |
+| Database | PostgreSQL 16 (shared with Portal) |
+| Auth | Cognito JWT |
+| LLM | Bedrock via BAG |
+| Tools | MCP over SSH |
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+## Quality Gates
+
+- Python: Ruff (120 char, rules: E,W,F,I,B,C4,UP,S,T20,SIM,RUF)
+- TypeScript: ESLint + Prettier
+- Commits: Conventional format
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+Constitution supersedes all other practices. Amendments require:
+1. Documentation of change reason
+2. Validation against existing specs
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.0 | **Ratified**: 2025-12-13
