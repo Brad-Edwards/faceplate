@@ -8,4 +8,3 @@ describe('App', () => {
     expect(screen.getByText('Faceplate')).toBeInTheDocument();
   });
 });
-
